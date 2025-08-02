@@ -1,0 +1,55 @@
+<div class="min-h-screen  flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+        Sistema de Gestão de Processos Jurídicos
+      </h2>
+      <p class="mt-2 text-center text-sm text-white">
+        Faça login para acessar o sistema
+      </p>
+    </div>
+
+    <p-card styleClass="shadow-lg">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div>
+          <label for="username" class="block text-sm font-medium text-white">
+            Usuário
+          </label>
+          <div class="mt-1">
+            <input id="username" name="username" type="text" pInputText formControlName="username" class="w-full"
+              placeholder="Digite seu usuário" />
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium w-full text-white">
+            Senha
+          </label>
+          <div class="mt-1">
+            <p-password id="password" name="password" formControlName="password" [feedback]="false" [toggleMask]="true"
+              placeholder="Digite sua senha" styleClass="w-full" [style]="{'width': '100%'}">
+            </p-password>
+          </div>
+        </div>
+
+        <div>
+          <p-button type="submit" label="Entrar" icon="pi pi-sign-in" severity="primary" [loading]="loading"
+            styleClass="w-full">
+          </p-button>
+        </div>
+
+        <div class="text-center text-sm text-white">
+          <p class="font-medium mb-2">Credenciais de Teste:</p>
+          <div class="space-y-1 text-xs">
+            <p><strong>Usuário:</strong> teste | <strong>Senha:</strong> teste123</p>
+            <p><strong>Usuário:</strong> admin | <strong>Senha:</strong> admin123</p>
+            <p><strong>Usuário:</strong> usuario | <strong>Senha:</strong> user123</p>
+          </div>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>
+
+<!-- Toast para mensagens -->
+<p-toast></p-toast>

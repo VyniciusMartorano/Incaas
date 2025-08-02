@@ -1,0 +1,112 @@
+<!-- Header -->
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-white">Processos Jurídicos</h1>
+  <p class="text-white mt-2">Consulta de processos via API DataJud</p>
+</div>
+
+<!-- Filtros -->
+<p-card styleClass="mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-sm font-medium text-white mb-2">
+        Tipo de Justiça <span class="text-red-400">*</span>
+      </label>
+      <p-dropdown [(ngModel)]="filtroTipoJustica" [options]="tiposJustica" optionLabel="label" optionValue="value"
+        placeholder="Selecione o tipo" styleClass="w-full" (onChange)="onTipoJusticaChange()">
+      </p-dropdown>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-white mb-2">
+        Tribunal <span class="text-red-400">*</span>
+      </label>
+      <p-dropdown [(ngModel)]="filtroTribunal" [options]="tribunaisFiltrados" optionLabel="label" optionValue="value"
+        placeholder="Selecione o tribunal" styleClass="w-full" [disabled]="!filtroTipoJustica">
+      </p-dropdown>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-white mb-2">Nº do Processo</label>
+      <input pInputText [(ngModel)]="numeroProcesso" placeholder="Digite o número do processo..." class="w-full" />
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <p-button label="Buscar Processos" icon="pi pi-search" severity="primary" [loading]="loading"
+      (onClick)="buscarProcessos()">
+    </p-button>
+
+    <p-button label="Limpar Filtros" icon="pi pi-refresh" severity="secondary" class="ml-2" (onClick)="limparFiltros()">
+    </p-button>
+  </div>
+</p-card>
+
+<!-- Tabela de Processos -->
+<p-card>
+  <h3 class="text-lg font-semibold text-white mb-4">Lista de Processos</h3>
+
+  <div *ngIf="loading" class="flex justify-center items-center py-8">
+    <p-progressSpinner styleClass="w-8 h-8" strokeWidth="4" fill="var(--surface-ground)" animationDuration=".5s">
+    </p-progressSpinner>
+    <span class="ml-3 text-gray-300">Carregando processos...</span>
+  </div>
+
+  <p-table *ngIf="!loading" [value]="processos" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[10, 25, 50]"
+    [globalFilterFields]="['numero', 'grau', 'classeJudicial', 'assuntosPrincipais', 'comarca']"
+    styleClass="p-datatable-sm">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="numero" class="text-white">Número do Processo <p-sortIcon field="numero"></p-sortIcon></th>
+        <th pSortableColumn="grau" class="text-white">Grau <p-sortIcon field="grau"></p-sortIcon></th>
+        <th pSortableColumn="classeJudicial" class="text-white">Classe Judicial <p-sortIcon
+            field="classeJudicial"></p-sortIcon></th>
+        <th pSortableColumn="assuntosPrincipais" class="text-white">Assuntos Principais <p-sortIcon
+            field="assuntosPrincipais"></p-sortIcon></th>
+        <th pSortableColumn="comarca" class="text-white">Comarca <p-sortIcon field="comarca"></p-sortIcon></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-processo>
+      <tr>
+        <td class="font-medium text-white">{{ processo.numero }}</td>
+        <td>
+          <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">
+            {{ processo.grau }}
+          </span>
+        </td>
+        <td>
+          <span>
+            {{ processo.classeJudicial }}
+          </span>
+        </td>
+        <td class="text-white">{{ processo.assuntosPrincipais }}</td>
+        <td class="text-white">{{ processo.comarca }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center py-8 text-white">
+          <div class="flex flex-col items-center">
+            <i class="pi pi-search text-4xl text-gray-400 mb-4"></i>
+            <p class="text-lg font-medium">
+              {{ processos.length === 0 && !loading ? 'Selecione o Tipo de Justiça e Tribunal para buscar processos' :
+              'Nenhum
+              processo encontrado' }}
+            </p>
+            <p class="text-sm">
+              {{ processos.length === 0 && !loading ? 'Os campos Tipo de Justiça e Tribunal são obrigatórios' : 'Tente
+              ajustar os
+              filtros de busca' }}
+            </p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<!-- Toast para mensagens -->
+<p-toast></p-toast>

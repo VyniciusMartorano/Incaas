@@ -1,0 +1,143 @@
+<!-- Header -->
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-white">Gestão de Partes Interessadas</h1>
+  <p class="text-white mt-2">Gerencie as partes interessadas dos processos jurídicos</p>
+</div>
+
+<!-- Botão Adicionar -->
+<div class="mb-6">
+  <p-button label="Nova Parte Interessada" icon="pi pi-plus" severity="primary" (onClick)="showDialog()">
+  </p-button>
+</div>
+
+<!-- Tabela -->
+<p-card>
+  <p-table [value]="partesInteressadas" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[10, 25, 50]"
+    [globalFilterFields]="['nome', 'tipo', 'documento', 'email']" styleClass="p-datatable-sm">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="nome" class="text-white">Nome <p-sortIcon field="nome"></p-sortIcon></th>
+        <th pSortableColumn="tipo" class="text-white">Tipo <p-sortIcon field="tipo"></p-sortIcon></th>
+        <th pSortableColumn="documento" class="text-white">CPF/CNPJ <p-sortIcon field="documento"></p-sortIcon></th>
+        <th pSortableColumn="email" class="text-white">Email <p-sortIcon field="email"></p-sortIcon></th>
+        <th class="text-white">Ações</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-parte>
+      <tr>
+        <td class="text-white">{{ parte.nome }}</td>
+        <td>
+          <span [class]="parte.tipo === 'PF' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
+            class="px-2 py-1 rounded-full text-xs font-medium">
+            {{ parte.tipo === 'PF' ? 'Pessoa Física' : 'Pessoa Jurídica' }}
+          </span>
+        </td>
+        <td class="text-white">{{ parte.documento }}</td>
+        <td class="text-white">{{ parte.email }}</td>
+        <td>
+          <div class="flex gap-2">
+            <p-button icon="pi pi-pencil" severity="secondary" size="small" (onClick)="editParte(parte)">
+            </p-button>
+            <p-button icon="pi pi-trash" severity="danger" size="small" (onClick)="deleteParte(parte)">
+            </p-button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center py-8 text-white">
+          <div class="flex flex-col items-center">
+            <i class="pi pi-users text-4xl text-gray-400 mb-4"></i>
+            <p class="text-lg font-medium">Nenhuma parte interessada encontrada</p>
+            <p class="text-sm">Clique em "Nova Parte Interessada" para adicionar</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<!-- Dialog para Adicionar/Editar -->
+<p-dialog [(visible)]="dialogVisible" [header]="editMode ? 'Editar Parte Interessada' : 'Nova Parte Interessada'"
+  [modal]="true" [style]="{ width: '50rem' }" [draggable]="false" [resizable]="false">
+
+  <form [formGroup]="parteForm" (ngSubmit)="saveParte()" class="space-y-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-white mb-2">Nome</label>
+        <input pInputText formControlName="nome" class="w-full" placeholder="Digite o nome completo" />
+        <div *ngIf="isFieldInvalid('nome')" class="text-red-400 text-sm mt-1">
+          {{ getFieldError('nome') }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-white mb-2">Tipo</label>
+        <p-dropdown formControlName="tipo" [options]="tipos" optionLabel="label" optionValue="value"
+          placeholder="Selecione o tipo" styleClass="w-full">
+        </p-dropdown>
+        <div *ngIf="isFieldInvalid('tipo')" class="text-red-400 text-sm mt-1">
+          {{ getFieldError('tipo') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-white mb-2">CPF/CNPJ</label>
+        <p-inputMask formControlName="documento" [mask]="documentoMask" [placeholder]="documentoPlaceholder"
+          styleClass="w-full">
+        </p-inputMask>
+        <div *ngIf="isFieldInvalid('documento')" class="text-red-400 text-sm mt-1">
+          {{ getFieldError('documento') }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-white mb-2">Email</label>
+        <input pInputText formControlName="email" type="email" class="w-full" placeholder="exemplo@email.com" />
+        <div *ngIf="isFieldInvalid('email')" class="text-red-400 text-sm mt-1">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-white mb-2">Telefone</label>
+      <p-inputMask formControlName="telefone" mask="(99) 99999-9999" placeholder="(00) 00000-0000" styleClass="w-full">
+      </p-inputMask>
+      <div *ngIf="isFieldInvalid('telefone')" class="text-red-400 text-sm mt-1">
+        {{ getFieldError('telefone') }}
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-white mb-2">Endereço</label>
+      <input pInputText formControlName="endereco" class="w-full" placeholder="Digite o endereço completo" />
+      <div *ngIf="isFieldInvalid('endereco')" class="text-red-400 text-sm mt-1">
+        {{ getFieldError('endereco') }}
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancelar" severity="secondary" (onClick)="hideDialog()" [disabled]="loading">
+      </p-button>
+      <p-button label="Salvar" severity="primary" (onClick)="saveParte()" [disabled]="!parteForm.valid || loading"
+        [loading]="loading">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast para mensagens -->
+<p-toast></p-toast>
+
+<!-- ConfirmDialog para exclusão -->
+<p-confirmDialog></p-confirmDialog>

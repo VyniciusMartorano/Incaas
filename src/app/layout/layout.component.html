@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-gray-900">
+  <!-- Header -->
+  <header class="bg-gray-800 shadow-sm border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div>
+          <h1 class="text-2xl font-bold text-white">Sistema de Gestão de Processos Jurídicos</h1>
+          <p class="text-sm text-gray-300 mt-1">Bem-vindo, {{ getUsuarioNome() }} ({{ getUsuarioPerfil() }})</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <p-button label="Sair" icon="pi pi-sign-out" severity="secondary" size="small" (onClick)="logout()">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="bg-gray-800 shadow-sm border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex space-x-8 py-4">
+        <button 
+          [class]="isActiveRoute('/dashboard') ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-300 hover:text-white'"
+          class="px-3 py-2 text-sm font-medium"
+          (click)="navigateTo('/dashboard')">
+          Dashboard
+        </button>
+        <button 
+          [class]="isActiveRoute('/partes-interessadas') ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-300 hover:text-white'"
+          class="px-3 py-2 text-sm font-medium"
+          (click)="navigateTo('/partes-interessadas')">
+          Partes Interessadas
+        </button>
+        <button 
+          [class]="isActiveRoute('/processos') ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-300 hover:text-white'"
+          class="px-3 py-2 text-sm font-medium"
+          (click)="navigateTo('/processos')">
+          Processos
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<!-- Toast para mensagens -->
+<p-toast></p-toast> 
